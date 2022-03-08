@@ -1,0 +1,169 @@
+mysql> use fdelivery;
+Database changed
+mysql> show tables;
++---------------------+
+| Tables_in_fdelivery |
++---------------------+
+| appuser             |
+| category            |
+| product             |
+| restro              |
+| userdata            |
+| userpurchase        |
++---------------------+
+6 rows in set (0.03 sec)
+
+mysql> desc appuser;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| appuser_pk | int          | NO   | PRI | NULL    | auto_increment |
+| email      | varchar(255) | YES  |     | NULL    |                |
+| password   | varchar(255) | YES  |     | NULL    |                |
+| role       | varchar(255) | YES  |     | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
+4 rows in set (0.02 sec)
+Table:
+------
+create table appuser(
+appuser_pk int auto_increment not null primary key,
+email varchar(255),
+password varchar(255)
+);
+
+
+
+
+mysql> desc category;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| category_pk | int          | NO   | PRI | NULL    | auto_increment |
+| cname       | varchar(255) | YES  |     | NULL    |                |
+| restro_fk   | int          | NO   | MUL | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+
+Table:
+------
+create table category(
+category_pk int auto_increment not null primary key,
+cname varchar(255),
+restro_fk int not null,
+foreign key (restro_fk) references restro(restro_pk)
+);
+
+
+mysql> desc product;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int          | NO   | PRI | NULL    | auto_increment |
+| description | varchar(255) | YES  |     | NULL    |                |
+| name        | varchar(255) | YES  |     | NULL    |                |
+| price       | int          | YES  |     | NULL    |                |
+| status      | varchar(255) | YES  |     | NULL    |                |
+| category_fk | int          | NO   | MUL | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+
+Table:
+------
+
+create table product(
+id int auto_increment not null primary key,
+description  varchar(255),
+name varchar(255),
+price int,
+status varchar(255),
+category_fk int not null,
+foreign key (category_fk) references category(category_pk)
+);
+
+
+
+mysql> desc restro;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| restro_pk  | int          | NO   | PRI | NULL    | auto_increment |
+| address    | varchar(255) | YES  |     | NULL    |                |
+| contact    | varchar(255) | YES  |     | NULL    |                |
+| gstno      | varchar(255) | YES  |     | NULL    |                |
+| name       | varchar(255) | YES  |     | NULL    |                |
+| appuser_fk | int          | NO   | MUL | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
+6 rows in set (0.01 sec)
+
+
+Table:
+------
+create table restro(
+restro_pk int auto_increment not null primary key,
+address varchar(255),
+contact varchar(255),
+gstno varchar(255),
+name varchar(255),
+appuser_fk int not null,
+foreign key (appuser_fk) references appuser(appuser_pk)
+);
+
+
+mysql> desc userdata;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| id         | int          | NO   | PRI | NULL    | auto_increment |
+| name       | varchar(255) | YES  |     | NULL    |                |
+| ucontact   | varchar(255) | YES  |     | NULL    |                |
+| appuser_fk | int          | NO   | MUL | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
+4 rows in set (0.01 sec)
+
+
+Table:
+-------
+
+create table userdata(
+id int auto_increment not null primary key,
+name varchar(255),
+ucontact varchar(255),
+appuser_fk int not null,
+foreign key (appuser_fk) references appuser(appuser_pk)
+);
+
+mysql> desc userpurchase;
++-----------------+--------------+------+-----+---------+----------------+
+| Field           | Type         | Null | Key | Default | Extra          |
++-----------------+--------------+------+-----+---------+----------------+
+| userpurchase_pk | int          | NO   | PRI | NULL    | auto_increment |
+| address         | varchar(255) | YES  |     | NULL    |                |
+| amount          | varchar(255) | YES  |     | NULL    |                |
+| pdata           | json         | YES  |     | NULL    |                |
+| ptype           | varchar(255) | YES  |     | NULL    |                |
+| status          | varchar(255) | YES  |     | NULL    |                |
+| tranxid         | varchar(255) | YES  |     | NULL    |                |
+| ucontact        | varchar(255) | YES  |     | NULL    |                |
+| user_fk         | int          | NO   | MUL | NULL    |                |
+| restro_fk       | int          | NO   | MUL | NULL    |                |
++-----------------+--------------+------+-----+---------+----------------+
+10 rows in set (0.00 sec)
+
+Table:
+------
+create table userpurchase(
+userpurchase_pk int auto_increment not null primary key,
+address varchar(255),
+amount varchar(255),
+pdata json,
+ptype varchar(255),
+status varchar(255),
+tranxid varchar(255),
+ucontact varchar(255),
+user_fk int not null,
+restro_fk int not null,
+foreign key (user_fk) references appuser(appuser_pk),
+foreign key (restro_fk) references restro(restro_pk)
+);
